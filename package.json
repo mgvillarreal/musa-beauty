@@ -10,7 +10,10 @@
     "preview": "vite preview",
     "images": "node scripts/optimize-images.mjs",
     "lips-mask": "node scripts/make-lips-mask.mjs",
-    "lips-fit": "node scripts/fit-lips-mask.mjs"
+    "lips-fit": "node scripts/fit-lips-mask.mjs",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:a11y": "playwright test e2e/accessibility.spec.ts"
   },
   "dependencies": {
     "@fontsource/bodoni-moda": "^5.3.0",
@@ -21,6 +24,8 @@
     "zustand": "^5.1.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.65.1",
     "@tailwindcss/vite": "^4.3.5",
     "@types/node": "^24.19.2",
     "@types/react": "^19.3.0",

@@ -1,5 +1,9 @@
 # Musa · Your skin. Your muse. Your match.
 
+[![CI](https://github.com/mgvillarreal/musa-beauty/actions/workflows/ci.yml/badge.svg)](https://github.com/mgvillarreal/musa-beauty/actions/workflows/ci.yml)
+![Lighthouse accessibility 100](https://img.shields.io/badge/Lighthouse_accessibility-100-4b0e1e)
+![axe-core: 0 WCAG 2.1 AA violations](https://img.shields.io/badge/axe--core-0_WCAG_2.1_AA_violations-4b0e1e)
+
 A beauty store landing page built around one idea: **the same color looks different on every skin**. Try lipsticks on a model in real time, compare every shade on ten real skin tones, read reviews from people with your skin tone, and get a skincare routine from a three-question quiz.
 
 > **Musa is a fictional brand** created as a portfolio concept project. Products, prices, reviews and orders are for demo purposes only. No real order or payment is ever made.
@@ -44,6 +48,25 @@ A beauty store landing page built around one idea: **the same color looks differ
 ### Bilingual
 - Spanish and English, switched with a flag and remembered for the next visit. Every string was reviewed so both versions sound natural, not translated.
 
+## Quality at a glance
+
+| | Mobile | Desktop |
+|---|---|---|
+| Lighthouse performance | 89 | 100 |
+| Lighthouse accessibility | 100 | 100 |
+| Lighthouse best practices | 100 | 100 |
+| Lighthouse SEO | 100 | 100 |
+| First Contentful Paint | 2.1 s | 0.5 s |
+| Largest Contentful Paint | 3.5 s | 0.7 s |
+| Total Blocking Time | 9 ms | 0 ms |
+| Cumulative Layout Shift | 0.001 | 0 |
+| Page weight | 605 KiB | 522 KiB |
+
+Measured with Lighthouse 12.8 on the production build, median of three runs, with the real photos.
+On mobile, the largest element is the hero photo. It downloads early (it is preloaded), but it is drawn by React, so on a throttled phone it waits for the JavaScript to run. Splitting the code was tried and made no measurable difference, because most of the bundle is the animation library the hero needs anyway.
+
+**Accessibility**: axe-core reports **0 WCAG 2.0/2.1 A and AA violations** in 10 states (Spanish and English, every hero lipstick, blush on deep skin, mobile menu, bag, quiz question and result, newsletter error), on desktop and mobile. Automated tools catch a large share of issues, but not all of them, so keyboard and screen reader behavior is also covered by the end-to-end tests below.
+
 ## Design
 
 - **Palette**: wine, raspberry, gold and cream on a light base, used in solid color blocks. No gradients, no glassmorphism.
@@ -71,6 +94,23 @@ A beauty store landing page built around one idea: **the same color looks differ
 - **Tablet**: hero stacked and centered, shade name pinned under the lipsticks, tighter section spacing.
 - **Desktop**: full navigation from 1280 px. The hero photo scales to the viewport height so the whole hero fits on small laptops.
 
+## Testing
+
+End-to-end tests with [Playwright](https://playwright.dev/) run against the production build, on desktop (1280 × 900) and mobile (Pixel 7): **36 scenarios, 68 runs** (the hamburger menu tests only run on mobile, the full menu test only on desktop).
+
+| Area | What is covered |
+|---|---|
+| Hero | Picking a lipstick updates the name, number, color and photo description; keyboard arrows move between lipsticks; the main button goes to the shade finder |
+| Shade finder | Lipstick and blush shades, skin tone selection and its tooltip, adding a shade to the bag, "Choose a shade" from bestsellers |
+| Reviews | Tone shared with the shade finder, previous / next with wrap-around, back to the first review on tone change |
+| Routine quiz | "Next" disabled until answered, focus moves to each question, 6-step ritual in order with its total, beginner path, adding the routine to the bag, start over |
+| Bag | Opens on add, focus trap, Esc returns focus, the page behind is inert, quantities, free shipping progress, empty state, demo checkout notice |
+| Navigation | Mobile menu (state, links, Esc), desktop menu, newsletter validation |
+| Languages | Switching to English (text, `lang`, title), `$` prices in both languages, translated products and reviews, remembered on reload |
+| Accessibility | axe-core audit in 10 states |
+
+GitHub Actions runs lint, type check, build and the whole suite on every push and pull request, and keeps the Playwright report as an artifact.
+
 ## Images
 
 Product and skin photos are AI-generated with shared prompts, so every lipstick, blush and skin patch has the same framing and lighting. The originals stay out of git; a script turns them into optimized WebP files.
@@ -95,6 +135,7 @@ Every image has a fallback, so the page works with all, some or none of the phot
 - [Zustand](https://zustand.docs.pmnd.rs/) for state (shade finder, bag, language)
 - [sharp](https://sharp.pixelplumbing.com/) for the image scripts
 - [oxlint](https://oxc.rs/) for linting
+- [Playwright](https://playwright.dev/) + [axe-core](https://github.com/dequelabs/axe-core) for end-to-end and accessibility tests, on GitHub Actions
 - [Fontsource](https://fontsource.org/) for self-hosted fonts
 
 ## Project structure
@@ -111,6 +152,7 @@ src/
   store/        Shade finder and bag state
   lib/          Images, formatting, motion and shared styles
 scripts/        Image optimization and lip mask tools
+e2e/            End-to-end and accessibility tests
 ```
 
 ## Getting started
@@ -121,7 +163,13 @@ npm run dev       # development server
 npm run build     # type check + production build
 npm run preview   # serve the production build
 npm run lint
+
+npm run test:e2e     # all end-to-end and accessibility tests (desktop + mobile)
+npm run test:e2e:ui  # Playwright UI mode
+npm run test:a11y    # accessibility audit only
 ```
+
+Locally, the tests use the installed Google Chrome; in CI, Playwright's Chromium.
 
 ## Credits
 

@@ -12,7 +12,7 @@ const es = {
     openMenu: 'Abrir menú',
     closeMenu: 'Cerrar menú',
     bag: 'Bolsa',
-    bagCount: (n: number) => `Bolsa, ${n} ${n === 1 ? 'producto' : 'productos'}`,
+    bagItems: (n: number) => `, ${n} ${n === 1 ? 'producto' : 'productos'}`,
   },
   hero: {
     line1: 'Tu piel.',
@@ -160,7 +160,7 @@ const en: Messages = {
     openMenu: 'Open menu',
     closeMenu: 'Close menu',
     bag: 'Bag',
-    bagCount: (n: number) => `Bag, ${n} ${n === 1 ? 'item' : 'items'}`,
+    bagItems: (n: number) => `, ${n} ${n === 1 ? 'item' : 'items'}`,
   },
   hero: {
     line1: 'Your skin.',

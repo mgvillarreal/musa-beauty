@@ -99,11 +99,12 @@ export function Header() {
         />
 
         <div className="flex items-center gap-5 justify-self-end">
-          <button type="button" onClick={openBag} aria-label={t.header.bagCount(count)} className={`flex items-center gap-2 ${linkStyle}`}>
+          {/* Sin aria-label: el nombre sale del texto visible ("Bolsa") más la cantidad en texto oculto,
+              así quien usa control por voz puede decir lo que ve. En móvil "Bolsa" se oculta solo a la vista. */}
+          <button type="button" onClick={openBag} className={`flex items-center gap-2 ${linkStyle}`}>
             <BagIcon />
-            <span aria-hidden className="hidden sm:inline">
-              {t.header.bag}
-            </span>
+            <span className="max-sm:sr-only">{t.header.bag}</span>
+            <span className="sr-only">{t.header.bagItems(count)}</span>
             {/* El número entra desde abajo cada vez que cambia */}
             <span aria-hidden className="relative inline-flex h-5 min-w-4 overflow-hidden text-berry">
               <AnimatePresence mode="popLayout" initial={false}>
