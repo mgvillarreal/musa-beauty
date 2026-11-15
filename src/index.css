@@ -1,0 +1,113 @@
+@import 'tailwindcss';
+
+/*
+ * Musa: la página es un labial. Base crema, bloques de color de la paleta y tipografía de revista.
+ * Reglas de la casa para que no parezca plantilla:
+ * - Nada de vidrio esmerilado ni brillos decorativos. El único degradé es el hover del botón principal.
+ * - Bloques de color plenos y líneas finas, no tarjetas con sombra.
+ * - Esquinas rectas: la forma la dan la tipografía y el color.
+ * - El dorado nunca va como texto sobre crema (1.7:1): solo sobre negro, vino o como relleno.
+ */
+@theme {
+  --color-cream: #f7e9c9;
+  --color-gold: #d6b15c;
+  --color-berry: #8c1d3d;
+  --color-wine: #4b0e1e;
+  --color-night: #121012;
+  /* Texto secundario sobre crema: 6.3:1 */
+  --color-muted: #6e4a50;
+  --color-line: rgb(75 14 30 / 0.18);
+
+  --font-display: 'Bodoni Moda', 'Bodoni Fallback', Didot, Georgia, serif;
+  --font-sans: 'Jost', 'Jost Fallback', system-ui, sans-serif;
+}
+
+/* Respaldo con métricas parecidas mientras cargan las fuentes: el texto no salta (CLS) */
+@font-face {
+  font-family: 'Bodoni Fallback';
+  src: local('Didot'), local('Georgia');
+  size-adjust: 100%;
+}
+
+@font-face {
+  font-family: 'Jost Fallback';
+  src: local('Arial');
+  size-adjust: 94%;
+}
+
+html {
+  color-scheme: light;
+  scroll-behavior: smooth;
+  /* El header es fijo: los anclas (#tonos, #rutina...) dejan su alto libre arriba */
+  scroll-padding-top: 6rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-night);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-berry);
+  color: var(--color-cream);
+}
+
+
+/*
+ * Hero: el labial elegido vive en --shade (lo define la sección y lo heredan el título y el botón).
+ * Registrarlo como <color> permite que cambie con fundido al elegir otro labial;
+ * un degradé normal saltaría de golpe.
+ */
+@property --shade {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #8c1d3d;
+}
+
+.shade-scope {
+  transition: --shade 500ms ease;
+}
+
+/* "Tu musa.": barrido en degradé al pasar el mouse (fondo de 250% con un color sólido en cada extremo) */
+.sweep {
+  background-size: 250% 100%;
+  background-position: left;
+  transition: background-position 700ms ease-out;
+}
+
+.sweep:hover {
+  background-position: right;
+}
+
+/* "Tu musa.": texto del color del labial, que pasa a vino */
+.sweep-text-from-shade {
+  background-image: linear-gradient(90deg, var(--shade) 40%, var(--color-wine) 60%);
+  background-clip: text;
+  color: transparent;
+  /* La cursiva se sale un poco de su caja: margen para que el punto final no se corte */
+  padding-right: 0.08em;
+}
+
+/*
+ * Hover de todos los botones de color: aparece un filete crema por dentro y el color se aclara apenas.
+ * Es el mismo en el hero (que toma el color del labial) y en el resto, así todo se siente de una marca.
+ */
+.btn-lift {
+  transition:
+    box-shadow 300ms ease,
+    filter 300ms ease;
+}
+
+.btn-lift:hover,
+.btn-lift:focus-visible {
+  box-shadow: inset 0 0 0 1px rgb(247 233 201 / 0.75);
+  filter: brightness(1.15);
+}
